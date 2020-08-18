@@ -44,10 +44,30 @@ control 'cis-dil-benchmark-3.5.1.2' do
   tag cis: 'distribution-independent-linux:3.5.1.2'
   tag level: 1
 
-  describe ip6tables do
-    it { should have_rule('-A INPUT -i lo -j ACCEPT') }
-    it { should have_rule('-A OUTPUT -o lo -j ACCEPT') }
-    it { should have_rule('-A INPUT -s ::1 -j DROP') }
+  # Using match instead of have_rule to ensure tests work with iptables rule that have comments
+  # https://github.com/inspec/inspec/issues/3039
+  describe.one do
+    ip6tables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A INPUT)(?=.*-i lo)(?=.*-j ACCEPT)/) }
+      end
+    end
+  end
+
+  describe.one do
+    ip6tables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A OUTPUT)(?=.*-o lo)(?=.*-j ACCEPT)/) }
+      end
+    end
+  end
+
+  describe.one do
+    ip6tables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A INPUT)(?=.*-s ::1)(?=.*-j DROP)/) }
+      end
+    end
   end
 
   only_if { ipv6 == 0 }
@@ -56,18 +76,27 @@ end
 control 'cis-dil-benchmark-3.5.1.3' do
   title 'Ensure IPv6 outbound and established connections are configured'
   desc  "Configure the firewall rules for new outbound, and established IPv6 connections.\n\nRationale: If rules are not in place for new outbound, and established connections all packets will be dropped by the default policy preventing network usage."
-  impact 1.0
+  impact 0.0
 
   tag cis: 'distribution-independent-linux:3.5.1.3'
   tag level: 1
 
-  describe ip6tables do
-    it { should have_rule('-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT') }
-    it { should have_rule('-A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT') }
-    it { should have_rule('-A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT') }
-    it { should have_rule('-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT') }
-    it { should have_rule('-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT') }
-    it { should have_rule('-A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT') }
+  %w(tcp udp icmp).each do |proto|
+    describe.one do
+      ip6tables.retrieve_rules.each do |rule|
+        describe rule do
+          it { should match(/(?=.*-A OUTPUT)(?=.*-p #{proto})(?=.*-m state --state NEW,ESTABLISHED)(?=.*-j ACCEPT)/) }
+        end
+      end
+    end
+
+    describe.one do
+      ip6tables.retrieve_rules.each do |rule|
+        describe rule do
+          it { should match(/(?=.*-A INPUT)(?=.*-p #{proto})(?=.*-m state --state ESTABLISHED)(?=.*-j ACCEPT)/) }
+        end
+      end
+    end
   end
 
   only_if { ipv6 == 0 }
@@ -114,11 +143,31 @@ control 'cis-dil-benchmark-3.5.2.2' do
   tag cis: 'distribution-independent-linux:3.5.2.2'
   tag level: 1
 
-  describe iptables do
-    it { should have_rule('-A INPUT -i lo -j ACCEPT') }
-    it { should have_rule('-A OUTPUT -o lo -j ACCEPT') }
-    it { should have_rule('-A INPUT -s 127.0.0.0/8 -j DROP') }
+  describe.one do
+    iptables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A INPUT)(?=.*-i lo)(?=.*-j ACCEPT)/) }
+      end
+    end
   end
+
+  describe.one do
+    iptables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A OUTPUT)(?=.*-o lo)(?=.*-j ACCEPT)/) }
+      end
+    end
+  end
+
+  describe.one do
+    iptables.retrieve_rules.each do |rule|
+      describe rule do
+        it { should match(/(?=.*-A INPUT)(?=.*-s 127.0.0.0\/8)(?=.*-j DROP)/) }
+      end
+    end
+  end
+
+
 end
 
 control 'cis-dil-benchmark-3.5.2.3' do
@@ -130,9 +179,20 @@ control 'cis-dil-benchmark-3.5.2.3' do
   tag level: 1
 
   %w(tcp udp icmp).each do |proto|
-    describe iptables do
-      it { should have_rule("-A OUTPUT -p #{proto} -m state --state NEW,ESTABLISHED -j ACCEPT") }
-      it { should have_rule("-A INPUT -p #{proto} -m state --state ESTABLISHED -j ACCEPT") }
+    describe.one do
+      iptables.retrieve_rules.each do |rule|
+        describe rule do
+          it { should match(/(?=.*-A OUTPUT)(?=.*-p #{proto})(?=.*-m state --state NEW,ESTABLISHED)(?=.*-j ACCEPT)/) }
+        end
+      end
+    end
+
+    describe.one do
+      iptables.retrieve_rules.each do |rule|
+        describe rule do
+          it { should match(/(?=.*-A INPUT)(?=.*-p #{proto})(?=.*-m state --state ESTABLISHED)(?=.*-j ACCEPT)/) }
+        end
+      end
     end
   end
 end
