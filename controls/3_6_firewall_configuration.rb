@@ -112,7 +112,7 @@ control 'cis-dil-benchmark-3.5.1.4' do
 
   port.where { address !~ /^::1$/ }.ports.each do |port|
     describe "Firewall rule should exist for port #{port}" do
-      subject { ip6tables.retrieve_rules.any? { |s| s =~ /\s--dport #{port}\s/ } }
+      subject { ip6tables.retrieve_rules.any? { |s| s =~ /\s--(dport|dports) #{port}\s/ } }
       it { should be true }
     end
   end
@@ -207,7 +207,7 @@ control 'cis-dil-benchmark-3.5.2.4' do
 
   port.where { address !~ /^(127\.0\.0\.1|::1)$/ }.ports.each do |port|
     describe "Firewall rule should exist for port #{port}" do
-      subject { iptables.retrieve_rules.any? { |s| s =~ /\s--dport #{port}\s/ } }
+      subject { iptables.retrieve_rules.any? { |s| s =~ /\s--(dport|dports) #{port}\s/ } }
       it { should be true }
     end
   end
