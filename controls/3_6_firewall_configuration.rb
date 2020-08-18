@@ -110,7 +110,7 @@ control 'cis-dil-benchmark-3.5.1.4' do
   tag cis: 'distribution-independent-linux:3.5.1.4'
   tag level: 1
 
-  port.where { address !~ /^::1$/ }.ports.each do |port|
+  port.where { address !~ /^(127\.0\.0\.1|::1)$/ }.ports.each do |port|
     describe "Firewall rule should exist for port #{port}" do
       subject { ip6tables.retrieve_rules.any? { |s| s =~ /\s--(dport|dports) #{port}\s/ } }
       it { should be true }
