@@ -127,10 +127,6 @@ control 'cis-dil-benchmark-5.4.1.5' do
 
   days_since_epoch = Date.today.to_time.to_i / (60 * 60 * 24)
 
-  describe command('useradd -D') do
-    its('stdout') { should match(/^INACTIVE=(30|[1-2][0-9]|[1-9])$/) }
-  end
-
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
       next if (user.password && %w(* !)).any?
