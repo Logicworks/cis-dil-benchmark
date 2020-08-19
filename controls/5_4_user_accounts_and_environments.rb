@@ -23,16 +23,18 @@ shadow_files << '/usr/share/baselayout/shadow' if file('/etc/nsswitch.conf').con
 passwd_files = ['/etc/passwd']
 passwd_files << '/usr/share/baselayout/passwd' if file('/etc/nsswitch.conf').content =~ /^passwd:\s+(\S+\s+)*usrfiles/
 
+shell_config_files = %w(bash.bashrc profile bashrc).map {|f| "/etc/#{f}"}.filter {|f| file(f).file?}
+
 control 'cis-dil-benchmark-5.4.1.1' do
-  title 'Ensure password expiration is 90 days or less'
-  desc  "The PASS_MAX_DAYS parameter in /etc/login.defs allows an administrator to force passwords to expire once they reach a defined age. It is recommended that the PASS_MAX_DAYS parameter be set to less than or equal to 90 days.\n\nRationale: The window of opportunity for an attacker to leverage compromised credentials or successfully compromise credentials via an online brute force attack is limited by the age of the password. Therefore, reducing the maximum age of a password also reduces an attacker's window of opportunity."
+  title 'Ensure password expiration is 365 days or less'
+  desc  "The PASS_MAX_DAYS parameter in /etc/login.defs allows an administrator to force passwords to expire once they reach a defined age. It is recommended that the PASS_MAX_DAYS parameter be set to less than or equal to 365 days.\n\nRationale: The window of opportunity for an attacker to leverage compromised credentials or successfully compromise credentials via an online brute force attack is limited by the age of the password. Therefore, reducing the maximum age of a password also reduces an attacker's window of opportunity."
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.4.1.1'
   tag level: 1
 
   describe login_defs do
-    its('PASS_MAX_DAYS') { should cmp <= 90 }
+    its('PASS_MAX_DAYS') { should cmp <= 365 }
   end
 
   shadow_files.each do |f|
@@ -40,7 +42,7 @@ control 'cis-dil-benchmark-5.4.1.1' do
       next if (user.password && %w(* !)).any?
 
       describe user do
-        its(:max_days) { should cmp <= 90 }
+        its('max_days') { should cmp <= 365 }
       end
     end
   end
@@ -63,7 +65,7 @@ control 'cis-dil-benchmark-5.4.1.2' do
       next if (user.password && %w(* !)).any?
 
       describe user do
-        its(:min_days) { should cmp >= 7 }
+        its('min_days') { should cmp >= 7 }
       end
     end
   end
@@ -86,7 +88,7 @@ control 'cis-dil-benchmark-5.4.1.3' do
       next if (user.password && %w(* !)).any?
 
       describe user do
-        its(:warn_days) { should cmp >= 7 }
+        its('warn_days') { should cmp >= 7 }
       end
     end
   end
@@ -101,7 +103,7 @@ control 'cis-dil-benchmark-5.4.1.4' do
   tag level: 1
 
   describe command('useradd -D') do
-    its(:stdout) { should match(/^INACTIVE=(30|[1-2][0-9]|[1-9])$/) }
+    its('stdout') { should match(/^INACTIVE=(30|[1-2][0-9]|[1-9])$/) }
   end
 
   shadow_files.each do |f|
@@ -109,14 +111,39 @@ control 'cis-dil-benchmark-5.4.1.4' do
       next if (user.password && %w(* !)).any?
 
       describe user do
-        its(:inactive_days) { should cmp <= 30 }
+        its('inactive_days') { should cmp <= 30 }
+      end
+    end
+  end
+end
+
+control 'cis-dil-benchmark-5.4.1.5' do
+  title 'Ensure all users last password change date is in the past'
+  desc  "All users should have a password change date in the past. \n\nRationale: If a users recorded password change date is in the future then they could bypass any set password expiration."
+  impact 1.0
+
+  tag cis: 'distribution-independent-linux:5.4.1.5'
+  tag level: 1
+
+  days_since_epoch = Date.today.to_time.to_i / (60 * 60 * 24)
+
+  describe command('useradd -D') do
+    its('stdout') { should match(/^INACTIVE=(30|[1-2][0-9]|[1-9])$/) }
+  end
+
+  shadow_files.each do |f|
+    shadow(f).users(/.+/).entries.each do |user|
+      next if (user.password && %w(* !)).any?
+
+      describe user do
+        its('last_change') { should cmp <= days_since_epoch }
       end
     end
   end
 end
 
 control 'cis-dil-benchmark-5.4.2' do
-  title 'Ensure system accounts are non-login'
+  title 'Ensure system accounts are secured'
   desc  "There are a number of accounts provided with Ubuntu that are used to manage applications and are not intended to provide an interactive shell.\n\nRationale: It is important to make sure that accounts that are not being used by regular users are prevented from being used to provide an interactive shell. By default, Ubuntu sets the password field for these accounts to an invalid string, but it is also recommended that the shell field in the password file be set to /sbin/nologin. This prevents the account from potentially being used to run any commands."
   impact 1.0
 
@@ -130,11 +157,11 @@ control 'cis-dil-benchmark-5.4.2' do
       next if %w(root sync shutdown halt).include? user.user
 
       describe user do
-        its(:shell) { should match(%r{(/usr/sbin/nologin|/sbin/nologin|/bin/false)}) }
+        its('shell') { should match(%r{(/usr/sbin/nologin|/sbin/nologin|/bin/false)}) }
       end
 
-      describe shadow(user.user) do
-        its(:passwords) { should be_all { |m| m == '*' } }
+      describe shadow.where(user: user.user) do
+        its('passwords') { should cmp /^[*!]/ }
       end
     end
   end
@@ -149,7 +176,7 @@ control 'cis-dil-benchmark-5.4.3' do
   tag level: 1
 
   describe passwd.users('root') do
-    its(:gids) { should cmp 0 }
+    its('gids') { should cmp 0 }
   end
 end
 
@@ -161,19 +188,30 @@ control 'cis-dil-benchmark-5.4.4' do
   tag cis: 'distribution-independent-linux:5.4.4'
   tag level: 1
 
-  %w(bash.bashrc profile bashrc).each do |f|
-    describe file("/etc/#{f}") do
-      its(:content) { should_not match(/^\s*umask [01234567](0[7654321]|[7654321][654321])\s*(?:#.*)?$/) }
+  shell_config_files.each do |f|
+    describe file(f) do
+      its('content') { should_not match(/^\s*umask [01234567](0[7654321]|[7654321][654321])\s*(?:#.*)?$/) }
     end
   end
 
-  describe.one do
-    %w(bash.bashrc profile bashrc).each do |f|
-      next unless file("/etc/#{f}").file?
+  shell_config_files.each do |f|
+    describe file(f) do
+      its('content') { should match(/^\s*umask [01234567][2367]7\s*(?:#.*)?$/) }
+    end
+  end
+end
 
-      describe file("/etc/#{f}") do
-        its(:content) { should match(/^\s*umask [01234567][2367]7\s*(?:#.*)?$/) }
-      end
+control 'cis-dil-benchmark-5.4.5' do
+  title 'Ensure default user shell timeout is 900 seconds or less'
+  desc  "The default TMOUT determines the shell timeout for users. The TMOUT value is measured in seconds.\n\nRationale: Having no timeout value associated with a shell could allow an unauthorized user access to another user's shell session (e.g. user walks away from their computer and doesn't lock the screen). Setting a timeout value at least reduces the risk of this happening."
+  impact 1.0
+
+  tag cis: 'distribution-independent-linux:5.4.5'
+  tag level: 2
+
+  shell_config_files.each do |f|
+    describe file(f) do
+      its('content') { should match(/^\s*TMOUT=([0-8][0-9]{0,2}|900)\s*(?:#.*)?$/) }
     end
   end
 end
@@ -200,6 +238,10 @@ control 'cis-dil-benchmark-5.6' do
   tag level: 1
 
   describe file('/etc/pam.d/su') do
-    its(:content) { should match(/^auth\s+required\s+pam_wheel.so use_uid$/) }
+    its('content') { should match(/^auth\s+required\s+pam_wheel.so use_uid$/) }
+  end
+
+  describe groups.where { name == 'wheel' } do
+    it { should exist }
   end
 end
