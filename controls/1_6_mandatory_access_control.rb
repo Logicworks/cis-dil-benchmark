@@ -20,24 +20,17 @@ cis_level = attribute('cis_level')
 title '1.6 Mandatory Access Control'
 
 control 'cis-dil-benchmark-1.6.1.1' do
-  title 'Ensure SELinux is not disabled in bootloader configuration'
-  desc  "Configure SELINUX to be enabled at boot time and verify that it has not been overwritten by the grub boot parameters.\n\nRationale: SELinux must be enabled at boot time in your grub configuration to ensure that the controls it provides are not overridden."
+  title 'Ensure SELinux or AppArmor are installed'
+  desc  "SELinux and AppArmor provide Mandatory Access Controls.\n\nRationale: Without a Mandatory Access Control system installed only the default Discretionary Access Control system will be available."
   impact 1.0
 
   tag cis: 'distribution-independent-linux:1.6.1.1'
   tag level: 2
 
-  only_if do
-    cis_level == 2 && (
-      package('selinux').installed? || command('sestatus').exist?
-    )
-  end
-
   describe.one do
-    grub_conf.locations.each do |f|
-      describe file(f) do
-        its(:content) { should_not match(/selinux=0/) }
-        its(:content) { should_not match(/enforcing=0/) }
+    %w(libselinux apparmor).each do |p|
+      describe package(p) do
+        it { should be_installed }
       end
     end
   end
