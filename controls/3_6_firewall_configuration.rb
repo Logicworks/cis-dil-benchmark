@@ -46,8 +46,11 @@ control 'cis-dil-benchmark-3.5.1.2' do
 
   # Using match instead of have_rule to ensure tests work with iptables rule that have comments
   # https://github.com/inspec/inspec/issues/3039
+
+  rules = ip6tables.retrieve_rules
+
   describe.one do
-    ip6tables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
         it { should match(/(?=.*-A INPUT)(?=.*-i lo)(?=.*-j ACCEPT)/) }
       end
@@ -55,7 +58,7 @@ control 'cis-dil-benchmark-3.5.1.2' do
   end
 
   describe.one do
-    ip6tables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
         it { should match(/(?=.*-A OUTPUT)(?=.*-o lo)(?=.*-j ACCEPT)/) }
       end
@@ -63,7 +66,7 @@ control 'cis-dil-benchmark-3.5.1.2' do
   end
 
   describe.one do
-    ip6tables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
         it { should match(/(?=.*-A INPUT)(?=.*-s ::1)(?=.*-j DROP)/) }
       end
@@ -81,9 +84,11 @@ control 'cis-dil-benchmark-3.5.1.3' do
   tag cis: 'distribution-independent-linux:3.5.1.3'
   tag level: 1
 
+  rules = ip6tables.retrieve_rules
+
   %w(tcp udp icmp).each do |proto|
     describe.one do
-      ip6tables.retrieve_rules.each do |rule|
+      rules.each do |rule|
         describe rule do
           it { should match(/(?=.*-A OUTPUT)(?=.*-p #{proto})(?=.*-m state --state NEW,ESTABLISHED)(?=.*-j ACCEPT)/) }
         end
@@ -91,7 +96,7 @@ control 'cis-dil-benchmark-3.5.1.3' do
     end
 
     describe.one do
-      ip6tables.retrieve_rules.each do |rule|
+      rules.each do |rule|
         describe rule do
           it { should match(/(?=.*-A INPUT)(?=.*-p #{proto})(?=.*-m state --state ESTABLISHED)(?=.*-j ACCEPT)/) }
         end
@@ -143,8 +148,10 @@ control 'cis-dil-benchmark-3.5.2.2' do
   tag cis: 'distribution-independent-linux:3.5.2.2'
   tag level: 1
 
+  rules = iptables.retrieve_rules
+
   describe.one do
-    iptables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
         it { should match(/(?=.*-A INPUT)(?=.*-i lo)(?=.*-j ACCEPT)/) }
       end
@@ -152,7 +159,7 @@ control 'cis-dil-benchmark-3.5.2.2' do
   end
 
   describe.one do
-    iptables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
         it { should match(/(?=.*-A OUTPUT)(?=.*-o lo)(?=.*-j ACCEPT)/) }
       end
@@ -160,9 +167,9 @@ control 'cis-dil-benchmark-3.5.2.2' do
   end
 
   describe.one do
-    iptables.retrieve_rules.each do |rule|
+    rules.each do |rule|
       describe rule do
-        it { should match(/(?=.*-A INPUT)(?=.*-s 127.0.0.0\/8)(?=.*-j DROP)/) }
+        it { should match(/(?=.*-A INPUT)(?=.*-s 127\.0\.0\.0\/8)(?=.*-j DROP)/) }
       end
     end
   end
@@ -178,9 +185,11 @@ control 'cis-dil-benchmark-3.5.2.3' do
   tag cis: 'distribution-independent-linux:3.5.2.3'
   tag level: 1
 
+  rules = iptables.retrieve_rules
+
   %w(tcp udp icmp).each do |proto|
     describe.one do
-      iptables.retrieve_rules.each do |rule|
+      rules.each do |rule|
         describe rule do
           it { should match(/(?=.*-A OUTPUT)(?=.*-p #{proto})(?=.*-m state --state NEW,ESTABLISHED)(?=.*-j ACCEPT)/) }
         end
@@ -188,7 +197,7 @@ control 'cis-dil-benchmark-3.5.2.3' do
     end
 
     describe.one do
-      iptables.retrieve_rules.each do |rule|
+      rules.each do |rule|
         describe rule do
           it { should match(/(?=.*-A INPUT)(?=.*-p #{proto})(?=.*-m state --state ESTABLISHED)(?=.*-j ACCEPT)/) }
         end
