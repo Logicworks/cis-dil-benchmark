@@ -15,6 +15,8 @@
 #
 # author: Kristian Vlaardingerbroek
 
+cis_level = attribute('cis_level')
+
 title '5.4 User Accounts and Environments'
 
 shadow_files = ['/etc/shadow']
@@ -210,6 +212,8 @@ control 'cis-dil-benchmark-5.4.5' do
       its('content') { should match(/^\s*TMOUT=([0-8][0-9]{0,2}|900)\s*(?:#.*)?$/) }
     end
   end
+
+  only_if { cis_level == 2 }
 end
 
 control 'cis-dil-benchmark-5.5' do
