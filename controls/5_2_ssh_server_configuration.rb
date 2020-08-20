@@ -33,23 +33,45 @@ control 'cis-dil-benchmark-5.2.1' do
     it { should_not be_readable.by 'other' }
     it { should_not be_writable.by 'other' }
     it { should_not be_executable.by 'other' }
-    its(:uid) { should cmp 0 }
-    its(:gid) { should cmp 0 }
+    its('uid') { should cmp 0 }
+    its('gid') { should cmp 0 }
   end
 end
 
 control 'cis-dil-benchmark-5.2.2' do
-  title 'Ensure SSH Protocol is set to 2'
-  desc  "SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale: SSH v1 suffers from insecurities that do not affect SSH v2."
+  title 'Ensure permissions on SSH private host key files are configured (Scored)'
+  desc  "An SSH private key is one of two files used in SSH public key authentication.\n\nRationale: If an unauthorized user obtains the private SSH host key file, the host could be impersonated"
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.2'
   tag level: 1
 
-  describe sshd_config do
-    its(:Protocol) { should cmp 2 }
+  command('find /etc/ssh -xdev -type f -name "ssh_host_*_key"').stdout.split.each do |f|
+    describe file(f) do
+      it { should_not be_readable.by 'group' }
+      it { should_not be_writable.by 'group' }
+      it { should_not be_executable.by 'group' }
+      it { should_not be_readable.by 'other' }
+      it { should_not be_writable.by 'other' }
+      it { should_not be_executable.by 'other' }
+      its('gid') { should cmp 0 }
+      its('uid') { should cmp 0 }
+    end
   end
 end
+
+# control 'cis-dil-benchmark-5.2.2' do
+#   title 'Ensure SSH Protocol is set to 2'
+#   desc  "SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale: SSH v1 suffers from insecurities that do not affect SSH v2."
+#   impact 1.0
+
+#   tag cis: 'distribution-independent-linux:5.2.2'
+#   tag level: 1
+
+#   describe sshd_config do
+#     its(:Protocol) { should cmp 2 }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.3' do
   title 'Ensure SSH LogLevel is set to INFO'
