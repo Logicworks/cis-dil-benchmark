@@ -60,6 +60,28 @@ control 'cis-dil-benchmark-5.2.2' do
   end
 end
 
+control 'cis-dil-benchmark-5.2.3' do
+  title 'Ensure permissions on SSH public host key files are configured (Scored)'
+  desc  "An SSH public key is one of two files used in SSH public key authentication.\n\nRationale: If a public host key file is modified by an unauthorized user, the SSH service may be compromised."
+  impact 1.0
+
+  tag cis: 'distribution-independent-linux:5.2.3'
+  tag level: 1
+
+  command('find /etc/ssh -xdev -type f -name "ssh_host_*_key.pub"').stdout.split.each do |f|
+    describe file(f) do
+      it { should be_readable.by 'group' }
+      it { should_not be_writable.by 'group' }
+      it { should_not be_executable.by 'group' }
+      it { should be_readable.by 'other' }
+      it { should_not be_writable.by 'other' }
+      it { should_not be_executable.by 'other' }
+      its('gid') { should cmp 0 }
+      its('uid') { should cmp 0 }
+    end
+  end
+end
+
 # control 'cis-dil-benchmark-5.2.2' do
 #   title 'Ensure SSH Protocol is set to 2'
 #   desc  "SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale: SSH v1 suffers from insecurities that do not affect SSH v2."
@@ -73,18 +95,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.3' do
-  title 'Ensure SSH LogLevel is set to INFO'
-  desc  "The INFO parameter specifies that login and logout activity will be logged.\n\nRationale: SSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically not recommended other than strictly for debugging SSH communications since it provides so much data that it is difficult to identify important security information. INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident Response, it is important to determine when a particular user was active on a system. The logout record can eliminate those users who disconnected, which helps narrow the field."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.3' do
+#   title 'Ensure SSH LogLevel is set to INFO'
+#   desc  "The INFO parameter specifies that login and logout activity will be logged.\n\nRationale: SSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically not recommended other than strictly for debugging SSH communications since it provides so much data that it is difficult to identify important security information. INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident Response, it is important to determine when a particular user was active on a system. The logout record can eliminate those users who disconnected, which helps narrow the field."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.3'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.3'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:LogLevel) { should eq 'INFO' }
-  end
-end
+#   describe sshd_config do
+#     its(:LogLevel) { should eq 'INFO' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.4' do
   title 'Ensure SSH X11 forwarding is disabled'
