@@ -39,7 +39,7 @@ control 'cis-dil-benchmark-5.4.1.1' do
 
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
-      next if (user.password && %w(* !)).any?
+      next if user.password.start_with?('*', '!')
 
       describe user do
         its('max_days') { should cmp <= 365 }
@@ -62,7 +62,7 @@ control 'cis-dil-benchmark-5.4.1.2' do
 
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
-      next if (user.password && %w(* !)).any?
+      next if user.password.start_with?('*', '!')
 
       describe user do
         its('min_days') { should cmp >= 7 }
@@ -85,7 +85,7 @@ control 'cis-dil-benchmark-5.4.1.3' do
 
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
-      next if (user.password && %w(* !)).any?
+      next if user.password.start_with?('*', '!')
 
       describe user do
         its('warn_days') { should cmp >= 7 }
@@ -108,7 +108,7 @@ control 'cis-dil-benchmark-5.4.1.4' do
 
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
-      next if (user.password && %w(* !)).any?
+      next if user.password.start_with?('*', '!')
 
       describe user do
         its('inactive_days') { should cmp <= 30 }
@@ -129,7 +129,7 @@ control 'cis-dil-benchmark-5.4.1.5' do
 
   shadow_files.each do |f|
     shadow(f).users(/.+/).entries.each do |user|
-      next if (user.password && %w(* !)).any?
+      next if user.password.start_with?('*', '!')
 
       describe user do
         its('last_change') { should cmp <= days_since_epoch }
