@@ -18,7 +18,7 @@
 title '5.2 SSH Server Configuration'
 
 control 'cis-dil-benchmark-5.2.1' do
-  title 'Ensure permissions on /etc/ssh/sshd_config are configured'
+  title 'Ensure permissions on /etc/ssh/sshd_config are configured (Scored)'
   desc  "The /etc/ssh/sshd_config file contains configuration specifications for sshd. The command below sets the owner and group of the file to root.\n\nRationale: The /etc/ssh/sshd_config file needs to be protected from unauthorized changes by non-privileged users."
   impact 1.0
 
@@ -82,18 +82,18 @@ control 'cis-dil-benchmark-5.2.3' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.2' do
-#   title 'Ensure SSH Protocol is set to 2'
-#   desc  "SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale: SSH v1 suffers from insecurities that do not affect SSH v2."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.4' do
+  title 'Ensure SSH Protocol is set to 2 (Scored)'
+  desc  "SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale: SSH v1 suffers from insecurities that do not affect SSH v2."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.2'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.4'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:Protocol) { should cmp 2 }
-#   end
-# end
+  describe sshd_config do
+    its('Protocol') { should cmp 2 }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.3' do
 #   title 'Ensure SSH LogLevel is set to INFO'
@@ -108,18 +108,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.4' do
-  title 'Ensure SSH X11 forwarding is disabled'
-  desc  "The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.\n\nRationale: Disable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.4' do
+#   title 'Ensure SSH X11 forwarding is disabled'
+#   desc  "The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.\n\nRationale: Disable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.4'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.4'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:X11Forwarding) { should eq 'no' }
-  end
-end
+#   describe sshd_config do
+#     its(:X11Forwarding) { should eq 'no' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.5' do
   title 'Ensure SSH MaxAuthTries is set to 4 or less'
