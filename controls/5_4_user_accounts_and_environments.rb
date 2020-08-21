@@ -188,13 +188,13 @@ control 'cis-dil-benchmark-5.4.4' do
 
   shell_config_files.each do |f|
     describe file(f) do
-      its('content') { should_not match(/^\s*umask [01234567](0[7654321]|[7654321][654321])\s*(?:#.*)?$/) }
+      its('content') { should_not match(/^\s*umask [0-7](0[1-7]|[1-7][1-6])\s*(?:#.*)?$/) }
     end
   end
 
   shell_config_files.each do |f|
     describe file(f) do
-      its('content') { should match(/^\s*umask [01234567][2367]7\s*(?:#.*)?$/) }
+      its('content') { should match(/^\s*umask [0-7][2367]7\s*(?:#.*)?$/) }
     end
   end
 end
