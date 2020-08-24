@@ -95,18 +95,18 @@ control 'cis-dil-benchmark-5.2.4' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.3' do
-#   title 'Ensure SSH LogLevel is set to INFO'
-#   desc  "The INFO parameter specifies that login and logout activity will be logged.\n\nRationale: SSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically not recommended other than strictly for debugging SSH communications since it provides so much data that it is difficult to identify important security information. INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident Response, it is important to determine when a particular user was active on a system. The logout record can eliminate those users who disconnected, which helps narrow the field."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.5' do
+  title 'Ensure SSH LogLevel is appropriate (Scored)'
+  desc  "INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident Response, it is important to determine when a particular user was active on a system. VERBOSE level specifies that login and logout activity as well as the key fingerprint for any SSH key used for login will be logged."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.3'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.5'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:LogLevel) { should eq 'INFO' }
-#   end
-# end
+  describe sshd_config do
+    its(:LogLevel) { should eq 'VERBOSE' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.4' do
 #   title 'Ensure SSH X11 forwarding is disabled'
@@ -121,18 +121,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.5' do
-  title 'Ensure SSH MaxAuthTries is set to 4 or less'
-  desc  "The MaxAuthTries parameter specifies the maximum number of authentication attempts permitted per connection. When the login failure count reaches half the number, error messages will be written to the syslog file detailing the login failure.\n\nRationale: Setting the MaxAuthTries parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. While the recommended setting is 4, set the number based on site policy."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.5' do
+#   title 'Ensure SSH MaxAuthTries is set to 4 or less'
+#   desc  "The MaxAuthTries parameter specifies the maximum number of authentication attempts permitted per connection. When the login failure count reaches half the number, error messages will be written to the syslog file detailing the login failure.\n\nRationale: Setting the MaxAuthTries parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. While the recommended setting is 4, set the number based on site policy."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.5'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.5'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:MaxAuthTries) { should cmp <= 4 }
-  end
-end
+#   describe sshd_config do
+#     its(:MaxAuthTries) { should cmp <= 4 }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.6' do
   title 'Ensure SSH IgnoreRhosts is enabled'
