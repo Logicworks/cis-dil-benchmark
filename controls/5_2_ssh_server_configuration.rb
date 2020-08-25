@@ -134,18 +134,18 @@ control 'cis-dil-benchmark-5.2.7' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.6' do
-#   title 'Ensure SSH IgnoreRhosts is enabled'
-#   desc  "The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale: Setting this parameter forces users to enter a password when authenticating with ssh."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.8' do
+  title 'Ensure SSH IgnoreRhosts is enabled (Scored)'
+  desc  "The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale: Setting this parameter forces users to enter a password when authenticating with ssh."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.6'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.8'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:IgnoreRhosts) { should eq 'yes' }
-#   end
-# end
+  describe sshd_config do
+    its('IgnoreRhosts') { should eq 'yes' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.7' do
 #   title 'Ensure SSH HostbasedAuthentication is disabled'
@@ -160,18 +160,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.8' do
-  title 'Ensure SSH root login is disabled'
-  desc  "The PermitRootLogin parameter specifies if the root user can log in using ssh(1). The default is no.\n\nRationale: Disallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident"
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.8' do
+#   title 'Ensure SSH root login is disabled'
+#   desc  "The PermitRootLogin parameter specifies if the root user can log in using ssh(1). The default is no.\n\nRationale: Disallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident"
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.8'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.8'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:PermitRootLogin) { should eq 'no' }
-  end
-end
+#   describe sshd_config do
+#     its(:PermitRootLogin) { should eq 'no' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.9' do
   title 'Ensure SSH PermitEmptyPasswords is disabled'
