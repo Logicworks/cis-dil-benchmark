@@ -121,18 +121,18 @@ control 'cis-dil-benchmark-5.2.6' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.5' do
-#   title 'Ensure SSH MaxAuthTries is set to 4 or less'
-#   desc  "The MaxAuthTries parameter specifies the maximum number of authentication attempts permitted per connection. When the login failure count reaches half the number, error messages will be written to the syslog file detailing the login failure.\n\nRationale: Setting the MaxAuthTries parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. While the recommended setting is 4, set the number based on site policy."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.7' do
+  title 'Ensure SSH MaxAuthTries is set to 4 or less (Scored)'
+  desc  "The MaxAuthTries parameter specifies the maximum number of authentication attempts permitted per connection. When the login failure count reaches half the number, error messages will be written to the syslog file detailing the login failure.\n\nRationale: Setting the MaxAuthTries parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. While the recommended setting is 4, set the number based on site policy."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.5'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.7'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:MaxAuthTries) { should cmp <= 4 }
-#   end
-# end
+  describe sshd_config do
+    its('MaxAuthTries') { should cmp <= 4 }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.6' do
 #   title 'Ensure SSH IgnoreRhosts is enabled'
@@ -147,18 +147,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.7' do
-  title 'Ensure SSH HostbasedAuthentication is disabled'
-  desc  "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection ."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.7' do
+#   title 'Ensure SSH HostbasedAuthentication is disabled'
+#   desc  "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection ."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.7'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.7'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:HostbasedAuthentication) { should eq 'no' }
-  end
-end
+#   describe sshd_config do
+#     its(:HostbasedAuthentication) { should eq 'no' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.8' do
   title 'Ensure SSH root login is disabled'
