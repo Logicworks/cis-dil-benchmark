@@ -104,22 +104,22 @@ control 'cis-dil-benchmark-5.2.5' do
   tag level: 1
 
   describe sshd_config do
-    its(:LogLevel) { should eq 'VERBOSE' }
+    its('LogLevel') { should eq 'VERBOSE' }
   end
 end
 
-# control 'cis-dil-benchmark-5.2.4' do
-#   title 'Ensure SSH X11 forwarding is disabled'
-#   desc  "The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.\n\nRationale: Disable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.6' do
+  title 'Ensure SSH X11 forwarding is disabled (Scored)'
+  desc  "The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.\n\nRationale: Disable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.4'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.6'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:X11Forwarding) { should eq 'no' }
-#   end
-# end
+  describe sshd_config do
+    its('X11Forwarding') { should eq 'no' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.5' do
 #   title 'Ensure SSH MaxAuthTries is set to 4 or less'
@@ -134,18 +134,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.6' do
-  title 'Ensure SSH IgnoreRhosts is enabled'
-  desc  "The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale: Setting this parameter forces users to enter a password when authenticating with ssh."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.6' do
+#   title 'Ensure SSH IgnoreRhosts is enabled'
+#   desc  "The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale: Setting this parameter forces users to enter a password when authenticating with ssh."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.6'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.6'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:IgnoreRhosts) { should eq 'yes' }
-  end
-end
+#   describe sshd_config do
+#     its(:IgnoreRhosts) { should eq 'yes' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.7' do
   title 'Ensure SSH HostbasedAuthentication is disabled'
