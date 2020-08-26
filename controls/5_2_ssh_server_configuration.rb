@@ -148,7 +148,7 @@ control 'cis-dil-benchmark-5.2.8' do
 end
 
 control 'cis-dil-benchmark-5.2.9' do
-  title 'Ensure SSH HostbasedAuthentication is disabled'
+  title 'Ensure SSH HostbasedAuthentication is disabled (Scored)'
   desc  "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection ."
   impact 1.0
 
@@ -160,18 +160,18 @@ control 'cis-dil-benchmark-5.2.9' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.8' do
-#   title 'Ensure SSH root login is disabled'
-#   desc  "The PermitRootLogin parameter specifies if the root user can log in using ssh(1). The default is no.\n\nRationale: Disallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident"
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.10' do
+  title 'Ensure SSH root login is disabled (Scored)'
+  desc  "The PermitRootLogin parameter specifies if the root user can log in using ssh(1). The default is no.\n\nRationale: Disallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident"
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.8'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.10'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:PermitRootLogin) { should eq 'no' }
-#   end
-# end
+  describe sshd_config do
+    its('PermitRootLogin') { should eq 'no' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.9' do
 #   title 'Ensure SSH PermitEmptyPasswords is disabled'
@@ -186,18 +186,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.10' do
-  title 'Ensure SSH PermitUserEnvironment is disabled'
-  desc  "The PermitUserEnvironment option allows users to present environment options to the ssh daemon.\n\nRationale: Permitting users the ability to set environment variables through the SSH daemon could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)"
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.10' do
+#   title 'Ensure SSH PermitUserEnvironment is disabled'
+#   desc  "The PermitUserEnvironment option allows users to present environment options to the ssh daemon.\n\nRationale: Permitting users the ability to set environment variables through the SSH daemon could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)"
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.10'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.10'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:PermitUserEnvironment) { should eq 'no' }
-  end
-end
+#   describe sshd_config do
+#     its(:PermitUserEnvironment) { should eq 'no' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.11' do
   title 'Ensure only approved ciphers are used'
