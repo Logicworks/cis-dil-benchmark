@@ -147,18 +147,18 @@ control 'cis-dil-benchmark-5.2.8' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.7' do
-#   title 'Ensure SSH HostbasedAuthentication is disabled'
-#   desc  "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection ."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.9' do
+  title 'Ensure SSH HostbasedAuthentication is disabled'
+  desc  "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection ."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.7'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.9'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:HostbasedAuthentication) { should eq 'no' }
-#   end
-# end
+  describe sshd_config do
+    its('HostbasedAuthentication') { should eq 'no' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.8' do
 #   title 'Ensure SSH root login is disabled'
@@ -173,18 +173,18 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.9' do
-  title 'Ensure SSH PermitEmptyPasswords is disabled'
-  desc  "The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.\n\nRationale: Disallowing remote shell access to accounts that have an empty password reduces the probability of unauthorized access to the system"
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.9' do
+#   title 'Ensure SSH PermitEmptyPasswords is disabled'
+#   desc  "The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.\n\nRationale: Disallowing remote shell access to accounts that have an empty password reduces the probability of unauthorized access to the system"
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.9'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.9'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:PermitEmptyPasswords) { should eq 'no' }
-  end
-end
+#   describe sshd_config do
+#     its(:PermitEmptyPasswords) { should eq 'no' }
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.10' do
   title 'Ensure SSH PermitUserEnvironment is disabled'
