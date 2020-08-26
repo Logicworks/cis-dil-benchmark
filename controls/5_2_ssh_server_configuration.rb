@@ -173,18 +173,18 @@ control 'cis-dil-benchmark-5.2.10' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.9' do
-#   title 'Ensure SSH PermitEmptyPasswords is disabled'
-#   desc  "The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.\n\nRationale: Disallowing remote shell access to accounts that have an empty password reduces the probability of unauthorized access to the system"
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.11' do
+  title 'Ensure SSH PermitEmptyPasswords is disabled (Scored)'
+  desc  "The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.\n\nRationale: Disallowing remote shell access to accounts that have an empty password reduces the probability of unauthorized access to the system"
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.9'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.11'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:PermitEmptyPasswords) { should eq 'no' }
-#   end
-# end
+  describe sshd_config do
+    its('PermitEmptyPasswords') { should eq 'no' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.10' do
 #   title 'Ensure SSH PermitUserEnvironment is disabled'
@@ -199,24 +199,24 @@ end
 #   end
 # end
 
-control 'cis-dil-benchmark-5.2.11' do
-  title 'Ensure only approved ciphers are used'
-  desc "This variable limits the types of ciphers that SSH can use during communication.\n\nRationale: Based on research conducted at various institutions, it was determined that the symmetric portion of the SSH Transport Protocol (as described in RFC 4253) has security weaknesses that allowed recovery of up to 32 bits of plaintext from a block of ciphertext that was encrypted with the Cipher Block Chaining (CBD) method. From that research, new Counter mode algorithms (as described in RFC4344) were designed that are not vulnerable to these types of attacks and these algorithms are now recommended for standard use."
-  impact 1.0
+# control 'cis-dil-benchmark-5.2.11' do
+#   title 'Ensure only approved ciphers are used'
+#   desc "This variable limits the types of ciphers that SSH can use during communication.\n\nRationale: Based on research conducted at various institutions, it was determined that the symmetric portion of the SSH Transport Protocol (as described in RFC 4253) has security weaknesses that allowed recovery of up to 32 bits of plaintext from a block of ciphertext that was encrypted with the Cipher Block Chaining (CBD) method. From that research, new Counter mode algorithms (as described in RFC4344) were designed that are not vulnerable to these types of attacks and these algorithms are now recommended for standard use."
+#   impact 1.0
 
-  tag cis: 'distribution-independent-linux:5.2.11'
-  tag level: 1
+#   tag cis: 'distribution-independent-linux:5.2.11'
+#   tag level: 1
 
-  describe sshd_config do
-    its(:Ciphers) { should_not be_nil }
-  end
+#   describe sshd_config do
+#     its(:Ciphers) { should_not be_nil }
+#   end
 
-  if sshd_config.Ciphers
-    describe sshd_config.Ciphers.split(',').each do
-      it { should_not match(/-cbc$/) }
-    end
-  end
-end
+#   if sshd_config.Ciphers
+#     describe sshd_config.Ciphers.split(',').each do
+#       it { should_not match(/-cbc$/) }
+#     end
+#   end
+# end
 
 control 'cis-dil-benchmark-5.2.12' do
   title 'Ensure only approved MAC algorithms are used'
