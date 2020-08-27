@@ -186,18 +186,18 @@ control 'cis-dil-benchmark-5.2.11' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.10' do
-#   title 'Ensure SSH PermitUserEnvironment is disabled'
-#   desc  "The PermitUserEnvironment option allows users to present environment options to the ssh daemon.\n\nRationale: Permitting users the ability to set environment variables through the SSH daemon could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)"
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.12' do
+  title 'Ensure SSH PermitUserEnvironment is disabled (Scored)'
+  desc  "The PermitUserEnvironment option allows users to present environment options to the ssh daemon.\n\nRationale: Permitting users the ability to set environment variables through the SSH daemon could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)"
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.10'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.12'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:PermitUserEnvironment) { should eq 'no' }
-#   end
-# end
+  describe sshd_config do
+    its('PermitUserEnvironment') { should eq 'no' }
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.11' do
 #   title 'Ensure only approved ciphers are used'
