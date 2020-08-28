@@ -231,37 +231,33 @@ control 'cis-dil-benchmark-5.2.13' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.12' do
-#   title 'Ensure only approved MAC algorithms are used'
-#   desc  "This variable limits the types of MAC algorithms that SSH can use during communication.\n\nRationale: MD5 and 96-bit MAC algorithms are considered weak and have been shown to increase exploitability in SSH downgrade attacks. Weak algorithms continue to have a great deal of attention as a weak spot that can be exploited with expanded computing power. An attacker that breaks the algorithm could take advantage of a MiTM position to decrypt the SSH tunnel and capture credentials and information"
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.14' do
+  title 'Ensure only strong MAC algorithms are used (Scored)'
+  desc  "This variable limits the types of MAC algorithms that SSH can use during communication.\n\nRationale: MD5 and 96-bit MAC algorithms are considered weak and have been shown to increase exploitability in SSH downgrade attacks. Weak algorithms continue to have a great deal of attention as a weak spot that can be exploited with expanded computing power. An attacker that breaks the algorithm could take advantage of a MiTM position to decrypt the SSH tunnel and capture credentials and information"
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.12'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.14'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:MACs) { should_not be_nil }
-#   end
+  describe sshd_config do
+    its('MACs') { should_not be_nil }
+  end
 
-#   ALLOWED_MACS = [
-#     'hmac-sha2-512-etm@openssh.com',
-#     'hmac-sha2-256-etm@openssh.com',
-#     'umac-128-etm@openssh.com',
-#     'hmac-sha2-512',
-#     'hmac-sha2-256',
-#     'umac-128@openssh.com',
-#     'curve25519-sha256@libssh.org',
-#     'diffie-hellman-group-exchange-sha256'
-#   ].freeze
+  ALLOWED_MACS = [
+    'hmac-sha2-512-etm@openssh.com',
+    'hmac-sha2-256-etm@openssh.com',
+    'hmac-sha2-512',
+    'hmac-sha2-256'
+  ].freeze
 
-#   if sshd_config.MACs
-#     sshd_config.MACs.split(',').each do |m|
-#       describe m do
-#         it { should be_in ALLOWED_MACS }
-#       end
-#     end
-#   end
-# end
+  if sshd_config.MACs
+    sshd_config.MACs.split(',').each do |m|
+      describe m do
+        it { should be_in ALLOWED_MACS }
+      end
+    end
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.13' do
 #   title 'Ensure SSH Idle Timeout Interval is configured'
