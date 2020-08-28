@@ -199,24 +199,37 @@ control 'cis-dil-benchmark-5.2.12' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.11' do
-#   title 'Ensure only approved ciphers are used'
-#   desc "This variable limits the types of ciphers that SSH can use during communication.\n\nRationale: Based on research conducted at various institutions, it was determined that the symmetric portion of the SSH Transport Protocol (as described in RFC 4253) has security weaknesses that allowed recovery of up to 32 bits of plaintext from a block of ciphertext that was encrypted with the Cipher Block Chaining (CBD) method. From that research, new Counter mode algorithms (as described in RFC4344) were designed that are not vulnerable to these types of attacks and these algorithms are now recommended for standard use."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.13' do
+  title 'Ensure only strong Ciphers are used (Scored)'
+  desc "This variable limits the types of ciphers that SSH can use during communication.\n\nRationale: Weak ciphers that are used for authentication to the cryptographic module cannot be relied upon to provide confidentiality or integrity, and system data may be compromised"
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.11'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.13'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:Ciphers) { should_not be_nil }
-#   end
+  describe sshd_config do
+    its('Ciphers') { should_not be_nil }
+  end
 
-#   if sshd_config.Ciphers
-#     describe sshd_config.Ciphers.split(',').each do
-#       it { should_not match(/-cbc$/) }
-#     end
-#   end
-# end
+  WEAK_CIPHERS = [
+    '3des-cbc',
+    'aes128-cbc',
+    'aes192-cbc',
+    'aes256-cbc',
+    'arcfour',
+    'arcfour128',
+    'arcfour256',
+    'blowfish-cbc',
+    'cast128-cbc',
+    'rijndael-cbc@lysator.liu.se'
+  ].freeze
+
+  if sshd_config.Ciphers
+    describe sshd_config.Ciphers.split(',').each do
+      it { should_not be_in WEAK_CIPHERS }
+    end
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.12' do
 #   title 'Ensure only approved MAC algorithms are used'
