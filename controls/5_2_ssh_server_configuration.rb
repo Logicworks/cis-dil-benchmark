@@ -306,20 +306,20 @@ control 'cis-dil-benchmark-5.2.16' do
   end
 end
 
-# control 'cis-dil-benchmark-5.2.14' do
-#   title 'Ensure SSH LoginGraceTime is set to one minute or less'
-#   desc  "The LoginGraceTime parameter specifies the time allowed for successful authentication to the SSH server. The longer the Grace period is the more open unauthenticated connections can exist. Like other session controls in this session the Grace Period should be limited to appropriate organizational limits to ensure the service is available for needed access.\n\nRationale: Setting the LoginGraceTime parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. It will also limit the number of concurrent unauthenticated connections While the recommended setting is 60 seconds (1 Minute), set the number based on site policy."
-#   impact 1.0
+control 'cis-dil-benchmark-5.2.17' do
+  title 'Ensure SSH LoginGraceTime is set to one minute or less (Scored)'
+  desc  "The LoginGraceTime parameter specifies the time allowed for successful authentication to the SSH server. The longer the Grace period is the more open unauthenticated connections can exist. Like other session controls in this session the Grace Period should be limited to appropriate organizational limits to ensure the service is available for needed access.\n\nRationale: Setting the LoginGraceTime parameter to a low number will minimize the risk of successful brute force attacks to the SSH server. It will also limit the number of concurrent unauthenticated connections While the recommended setting is 60 seconds (1 Minute), set the number based on site policy."
+  impact 1.0
 
-#   tag cis: 'distribution-independent-linux:5.2.14'
-#   tag level: 1
+  tag cis: 'distribution-independent-linux:5.2.17'
+  tag level: 1
 
-#   describe sshd_config do
-#     its(:LoginGraceTime) do
-#       should satisfy { |x| x == '1m' || ((matches = x.match(/(?<secs>[0-9]+)s?/)) && Integer(matches[:secs]) <= 60) }
-#     end
-#   end
-# end
+  describe sshd_config do
+    its('LoginGraceTime') do
+      should satisfy { |x| x == '1m' || ((matches = x.match(/(?<secs>[0-9]+)s?/)) && Integer(matches[:secs]) <= 60) }
+    end
+  end
+end
 
 # control 'cis-dil-benchmark-5.2.15' do
 #   title 'Ensure SSH access is limited'
