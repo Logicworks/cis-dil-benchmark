@@ -351,3 +351,29 @@ control 'cis-dil-benchmark-5.2.19' do
     its('Banner') { should_not be_nil }
   end
 end
+
+control 'cis-dil-benchmark-5.2.20' do
+  title 'Ensure SSH PAM is enabled (Scored)'
+  desc  "UsePAM Enables the Pluggable Authentication Module interface. If set to “yes” this will enable PAM authentication using ChallengeResponseAuthentication and PasswordAuthentication in addition to PAM account and session module processing for all authentication types\n\nRationale: When usePAM is set to yes, PAM runs through account and session types properly. This is important if you want to restrict access to services based off of IP, time or other factors of the account. Additionally, you can make sure users inherit certain environment variables on login or disallow access to the server"
+  impact 1.0
+
+  tag cis: 'distribution-independent-linux:5.2.20'
+  tag level: 1
+
+  describe sshd_config do
+    its('UsePAM') { should eq 'yes' }
+  end
+end
+
+control 'cis-dil-benchmark-5.2.21' do
+  title 'Ensure SSH AllowTcpForwarding is disabled (Scored)'
+  desc  "SSH port forwarding is a mechanism in SSH for tunneling application ports from the client to the server, or servers to clients. It can be used for adding encryption to legacy applications, going through firewalls, and some system administrators and IT professionals use it for opening backdoors into the internal network from their home machines\n\nRationale: Leaving port forwarding enabled can expose the organization to security risks and back-doors. SSH connections are protected with strong encryption. This makes their contents invisible to most deployed network monitoring and traffic filtering solutions. This invisibility carries considerable risk potential if it is used for malicious purposes such as data exfiltration. Cybercriminals or malware could exploit SSH to hide their unauthorized communications, or to exfiltrate stolen data from the target network"
+  impact 1.0
+
+  tag cis: 'distribution-independent-linux:5.2.21'
+  tag level: 1
+
+  describe sshd_config do
+    its('AllowTcpForwarding') { should eq 'no' }
+  end
+end
