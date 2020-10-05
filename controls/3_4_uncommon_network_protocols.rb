@@ -15,6 +15,8 @@
 #
 # author: Kristian Vlaardingerbroek
 
+cis_level = attribute('cis_level')
+
 title '3.4 Uncommon Network Protocols'
 
 control 'cis-dil-benchmark-3.4.1' do
@@ -24,6 +26,8 @@ control 'cis-dil-benchmark-3.4.1' do
 
   tag cis: 'distribution-independent-linux:3.4.1'
   tag level: 2
+
+  only_if { cis_level == 2 }
 
   describe kernel_module('dccp') do
     it { should_not be_loaded }
@@ -39,6 +43,8 @@ control 'cis-dil-benchmark-3.4.2' do
   tag cis: 'distribution-independent-linux:3.4.2'
   tag level: 2
 
+  only_if { cis_level == 2 }
+
   describe kernel_module('sctp') do
     it { should_not be_loaded }
     it { should be_disabled }
@@ -53,6 +59,8 @@ control 'cis-dil-benchmark-3.4.4' do
   tag cis: 'distribution-independent-linux:3.4.4'
   tag level: 2
 
+  only_if { cis_level == 2 }
+
   describe kernel_module('rds') do
     it { should_not be_loaded }
     it { should be_disabled }
@@ -66,6 +74,8 @@ control 'cis-dil-benchmark-3.4.4' do
 
   tag cis: 'distribution-independent-linux:3.4.4'
   tag level: 2
+
+  only_if { cis_level == 2 }
 
   describe kernel_module('tipc') do
     it { should_not be_loaded }
