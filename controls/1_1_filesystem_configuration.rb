@@ -129,6 +129,8 @@ control 'cis-dil-benchmark-1.1.1.8' do
     it { should_not be_loaded }
     it { should be_disabled }
   end
+
+  only_if { cis_level == 2 }
 end
 
 control 'cis-dil-benchmark-1.1.2' do
