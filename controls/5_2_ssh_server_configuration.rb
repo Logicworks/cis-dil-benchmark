@@ -15,6 +15,8 @@
 #
 # author: Kristian Vlaardingerbroek
 
+cis_level = attribute('cis_level')
+
 title '5.2 SSH Server Configuration'
 
 control 'cis-dil-benchmark-5.2.1' do
@@ -22,7 +24,7 @@ control 'cis-dil-benchmark-5.2.1' do
   desc  '
     The /etc/ssh/sshd_config file contains configuration specifications for sshd.
     The commandn below sets the owner and group of the file to root.
-    
+
     Rationale: The /etc/ssh/sshd_config file needs to be protected from unauthorized changes by non-privileged users.
   '
 
@@ -48,7 +50,7 @@ control 'cis-dil-benchmark-5.2.2' do
   title 'Ensure permissions on SSH private host key files are configured (Scored)'
   desc  '
     An SSH private key is one of two files used in SSH public key authentication.
-  
+
     Rationale: If an unauthorized user obtains the private SSH host key file, the host could be impersonated
   '
 
@@ -75,7 +77,7 @@ control 'cis-dil-benchmark-5.2.3' do
   title 'Ensure permissions on SSH public host key files are configured (Scored)'
   desc  '
     An SSH public key is one of two files used in SSH public key authentication.
-  
+
     Rationale: If a public host key file is modified by an unauthorized user, the SSH service may be compromised.
   '
 
@@ -103,7 +105,7 @@ control 'cis-dil-benchmark-5.2.4' do
   desc  '
     SSH supports two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol
     and was subject to security issues. SSH2 is more advanced and secure.
-    
+
     Rationale: SSH v1 suffers from insecurities that do not affect SSH v2.
   '
 
@@ -143,12 +145,12 @@ control 'cis-dil-benchmark-5.2.6' do
   title 'Ensure SSH X11 forwarding is disabled (Scored)'
   desc  '
     The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.
-    
+
     Rationale: Disable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small
     risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users
     on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.6'
@@ -164,11 +166,11 @@ control 'cis-dil-benchmark-5.2.7' do
   desc  '
     The MaxAuthTries parameter specifies the maximum number of authentication attempts permitted per connection. When the login
     failure count reaches half the number, error messages will be written to the syslog file detailing the login failure.
-    
+
     Rationale: Setting the MaxAuthTries parameter to a low number will minimize the risk of successful brute force attacks
     to the SSH server. While the recommended setting is 4, set the number based on site policy.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.7'
@@ -184,10 +186,10 @@ control 'cis-dil-benchmark-5.2.8' do
   desc  '
     The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or 
     HostbasedAuthentication.
-    
+
     Rationale: Setting this parameter forces users to enter a password when authenticating with ssh.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.8'
@@ -204,11 +206,11 @@ control 'cis-dil-benchmark-5.2.9' do
     The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of
     .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies
     to SSH Protocol Version 2.
-    
+
     Rationale: Even though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling
     the ability to use .rhosts files in SSH provides an additional layer of protection.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.9'
@@ -223,12 +225,12 @@ control 'cis-dil-benchmark-5.2.10' do
   title 'Ensure SSH root login is disabled (Scored)'
   desc  '
     The PermitRootLogin parameter specifies if the root user can log in using ssh(1). The default is no.
-    
+
     Rationale: Disallowing root logins over SSH requires system admins to authenticate using their own individual account,
     then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit
     trail in the event of a security incident
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.10'
@@ -243,11 +245,11 @@ control 'cis-dil-benchmark-5.2.11' do
   title 'Ensure SSH PermitEmptyPasswords is disabled (Scored)'
   desc  '
     The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.
-    
+
     Rationale: Disallowing remote shell access to accounts that have an empty password reduces the probability
     of unauthorized access to the system
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.11'
@@ -262,7 +264,7 @@ control 'cis-dil-benchmark-5.2.12' do
   title 'Ensure SSH PermitUserEnvironment is disabled (Scored)'
   desc  '
     The PermitUserEnvironment option allows users to present environment options to the ssh daemon.
-    
+
     Rationale: Permitting users the ability to set environment variables through the SSH daemon could potentially allow users
     to bypass security controls (e.g. setting an execution path that has ssh executing trojan`d programs)
   '
@@ -281,7 +283,7 @@ control 'cis-dil-benchmark-5.2.13' do
   title 'Ensure only strong Ciphers are used (Scored)'
   desc  '
     This variable limits the types of ciphers that SSH can use during communication.
-    
+
     Rationale: Weak ciphers that are used for authentication to the cryptographic module cannot be relied upon to provide
     confidentiality or integrity, and system data may be compromised
   '
@@ -324,7 +326,7 @@ control 'cis-dil-benchmark-5.2.14' do
     Weak algorithms continue to have a great deal of attention as a weak spot that can be exploited with expanded computing power.
     An attacker that breaks the algorithm could take advantage of a MiTM position to decrypt the SSH tunnel and capture credentials and information
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.14'
@@ -357,7 +359,7 @@ control 'cis-dil-benchmark-5.2.15' do
     Rationale: Key exchange methods that are considered weak should be removed. A key exchange method may be weak because too few bits are used,
     or the hashing algorithm is considered too weak. Using weak algorithms could expose connections to man-in-the-middle attacks
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.15'
@@ -397,14 +399,14 @@ control 'cis-dil-benchmark-5.2.16' do
     client alive messages are sent with no response from the client, the ssh session is terminated. For example, if
     the ClientAliveInterval is set to 15 seconds and the ClientAliveCountMax is set to 3, the client ssh session will be terminated
     after 45 seconds of idle time.
-    
+
     Rationale: Having no timeout value associated with a connection could allow an unauthorized user access to another user`s ssh
     session (e.g. user walks away from their computer and doesn`t lock the screen). Setting a timeout value at least reduces the risk
     of this happening. While the recommended setting is 300 seconds (5 minutes), set this timeout value based on site policy.
     The recommended setting for ClientAliveCountMax is 0. In this case, the client session will be terminated after 5 minutes
     of idle time and no keepalive messages will be sent.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.16'
@@ -422,12 +424,12 @@ control 'cis-dil-benchmark-5.2.17' do
     The LoginGraceTime parameter specifies the time allowed for successful authentication to the SSH server. The longer
     the Grace period is the more open unauthenticated connections can exist. Like other session controls in this session
     the Grace Period should be limited to appropriate organizational limits to ensure the service is available for needed access.
-    
+
     Rationale: Setting the LoginGraceTime parameter to a low number will minimize the risk of successful brute force attacks
     to the SSH server. It will also limit the number of concurrent unauthenticated connections While the recommended setting
     is 60 seconds (1 Minute), set the number based on site policy.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.17'
@@ -445,17 +447,17 @@ control 'cis-dil-benchmark-5.2.18' do
   desc '
     There are several options available to limit which users and group can access the system via SSH. It is recommended
     that at least one of the following options be leveraged:
-  
+
     AllowUsers
     The AllowUsers variable gives the system administrator the option of allowing specific users to ssh into the system.
     The list consists of comma separated user names. Numeric user IDs are not recognized with this variable. If a system
     administrator wants to restrict user access further by only allowing the allowed users to log in from a particular host,
     the entry can be specified in the form of user@host.
-  
+
     AllowGroups
     The AllowGroups variable gives the system administrator the option of allowing specific groups of users to ssh into the system.
     The list consists of comma separated group names. Numeric group IDs are not recognized with this variable.
-  
+
     DenyUsers
     The DenyUsers variable gives the system administrator the option of denying specific users to ssh into the system.
     The list consists of comma separated user names. Numeric user IDs are not recognized with this variable. If a system
@@ -463,11 +465,11 @@ control 'cis-dil-benchmark-5.2.18' do
     the entry can be specified in the form of user@host. DenyGroups\nThe DenyGroups variable gives the system administrator
     the option of denying specific groups of users to ssh into the system. The list consists of comma separated group names.
     Numeric group IDs are not recognized with this variable.
-  
+
     Rationale: Restricting which users can remotely access the system via SSH will help ensure that only authorized users access
     the system.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.18'
@@ -487,11 +489,11 @@ control 'cis-dil-benchmark-5.2.19' do
   desc  '
     The Banner parameter specifies a file whose contents must be sent to the remote user before authentication is permitted.
     By default, no banner is displayed.
-    
+
     Rationale: Banners are used to warn connecting users of the particular site`s policy regarding connection. Presenting
     a warning message prior to the normal user login may assist the prosecution of trespassers on the computer system.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.19'
@@ -505,14 +507,14 @@ end
 control 'cis-dil-benchmark-5.2.20' do
   title 'Ensure SSH PAM is enabled (Scored)'
   desc  '
-    UsePAM Enables the Pluggable Authentication Module interface. If set to “yes” this will enable PAM authentication using
+    UsePAM Enables the Pluggable Authentication Module interface. If set to "yes" this will enable PAM authentication using
     ChallengeResponseAuthentication and PasswordAuthentication in addition to PAM account and session module processing
     for all authentication types
-    
+
     Rationale: When usePAM is set to yes, PAM runs through account and session types properly. This is important if you
     want to restrict access to services based off of IP, time or other factors of the account. Additionally, you can make
     sure users inherit certain environment variables on login or disallow access to the server'
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.20'
@@ -529,18 +531,20 @@ control 'cis-dil-benchmark-5.2.21' do
     SSH port forwarding is a mechanism in SSH for tunneling application ports from the client to the server, or servers
     to clients. It can be used for adding encryption to legacy applications, going through firewalls, and some system
     administrators and IT professionals use it for opening backdoors into the internal network from their home machines
-    
+
     Rationale: Leaving port forwarding enabled can expose the organization to security risks and back-doors.
     SSH connections are protected with strong encryption. This makes their contents invisible to most deployed network
     monitoring and traffic filtering solutions. This invisibility carries considerable risk potential if it is used for
     malicious purposes such as data exfiltration. Cybercriminals or malware could exploit SSH to hide their unauthorized
     communications, or to exfiltrate stolen data from the target network
   '
-  
+
   impact 1.0
 
+  only_if { cis_level == 2 }
+
   tag cis: 'distribution-independent-linux:5.2.21'
-  tag level: 1
+  tag level: 2
 
   describe sshd_config do
     its('AllowTcpForwarding') { should eq 'no' }
@@ -551,12 +555,12 @@ control 'cis-dil-benchmark-5.2.22' do
   title 'Ensure SSH MaxStartups is configured (Scored)'
   desc  '
     The MaxStartups parameter specifies the maximum number of concurrent unauthenticated connections to the SSH daemon.
-    
+
     Rationale: To protect a system from denial of service due to a large number of pending authentication connection
     attempts, use the rate limiting function of MaxStartups to protect availability of sshd logins and prevent
     overwhelming the daemon.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.22'
@@ -571,11 +575,11 @@ control 'cis-dil-benchmark-5.2.23' do
   title 'Ensure SSH MaxSessions is set to 4 or less (Scored)'
   desc  '
     The MaxSessions parameter specifies the maximum number of open sessions permitted from a given connection.
-    
+
     Rationale: To protect a system from denial of service due to a large number of concurrent sessions, use the rate
     limiting function of MaxSessions to protect availability of sshd logins and prevent overwhelming the daemon.
   '
-  
+
   impact 1.0
 
   tag cis: 'distribution-independent-linux:5.2.23'

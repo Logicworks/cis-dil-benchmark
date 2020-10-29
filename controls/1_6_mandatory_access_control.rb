@@ -28,7 +28,7 @@ control 'cis-dil-benchmark-1.6.1.1' do
   tag level: 2
 
   describe.one do
-    %w(libselinux apparmor).each do |p|
+    %w(libselinux libselinux1 apparmor).each do |p|
       describe package(p) do
         it { should be_installed }
       end

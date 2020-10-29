@@ -51,12 +51,12 @@ control 'cis-dil-benchmark-3.4.2' do
   end
 end
 
-control 'cis-dil-benchmark-3.4.4' do
+control 'cis-dil-benchmark-3.4.3' do
   title 'Ensure RDS is disabled'
   desc  "The Reliable Datagram Sockets (RDS) protocol is a transport layer protocol designed to provide low-latency, high-bandwidth communications between cluster nodes. It was developed by the Oracle Corporation.\n\nRationale: If the protocol is not being used, it is recommended that kernel module not be loaded, disabling the service to reduce the potential attack surface."
   impact 1.0
 
-  tag cis: 'distribution-independent-linux:3.4.4'
+  tag cis: 'distribution-independent-linux:3.4.3'
   tag level: 2
 
   only_if { cis_level == 2 }
